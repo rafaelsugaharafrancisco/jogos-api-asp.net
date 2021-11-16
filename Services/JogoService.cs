@@ -23,29 +23,18 @@ namespace ApiCatalogoJogos.Services
         }
         public JogoViewModel Atualizar(int id, JogoInputModel jogoInput)
         {
-            var jogo =  _jogoRepository.Obter(id);
+            var jogo = _jogoRepository.Obter(id);
 
             if (jogo == null)
             {
                 throw new JogoNaoCadastradoException();
             }
 
-            jogo.Nome = jogoInput.Nome;
-            jogo.Produtora = jogoInput.Produtora;
-            jogo.Preco = jogoInput.Preco;
-
+            _mapper.Map(jogoInput, jogo);
 
             var jogoAtualizado = _jogoRepository.Atualizar(jogo);
 
-
-            return new JogoViewModel
-            {
-                Id = jogo.Id,
-                Nome = jogoAtualizado.Nome,
-                Produtora = jogoAtualizado.Produtora,
-                Preco = jogoAtualizado.Preco
-            };
-
+            return _mapper.Map<JogoViewModel>(jogoAtualizado);
         }
 
         public JogoViewModel Atualizar(int id, double preco)
@@ -61,14 +50,7 @@ namespace ApiCatalogoJogos.Services
 
             var jogoAtualizado = _jogoRepository.Atualizar(jogo);
 
-            return new JogoViewModel
-            {
-                Id = jogo.Id,
-                Nome = jogo.Nome,
-                Produtora = jogo.Produtora,
-                Preco = jogoAtualizado.Preco
-            };
-
+            return _mapper.Map<JogoViewModel>(jogoAtualizado);
         }
 
         public JogoViewModel Inserir(JogoInputModel jogo)
@@ -80,39 +62,18 @@ namespace ApiCatalogoJogos.Services
                 throw new JogoJaCadastradoException();
             }
 
-            var novoJogo = new Jogo
-            {
-                Nome = jogo.Nome,
-                Produtora = jogo.Produtora,
-                Preco = jogo.Preco
-            };
-
+            var novoJogo = _mapper.Map<Jogo>(jogo);
 
             var jogoInserido = _jogoRepository.Inserir(novoJogo);
 
-            return new JogoViewModel
-            {
-                Id = jogoInserido.Id,
-                Nome = jogoInserido.Nome,
-                Produtora = jogoInserido.Produtora,
-                Preco = jogoInserido.Preco
-            };
-
+            return _mapper.Map<JogoViewModel>(jogoInserido);
         }
 
         public List<JogoViewModel> Obter()
         {
             var jogos = _jogoRepository.Obter();
 
-            return jogos.Select(jogos => new JogoViewModel
-            {
-                Id = jogos.Id,
-                Nome = jogos.Nome,
-                Produtora = jogos.Produtora,
-                Preco = jogos.Preco
-
-            }).ToList();
-
+            return jogos.Select(jogo => _mapper.Map<JogoViewModel>(jogo)).ToList();
         }
 
         public JogoViewModel Obter(int id)
@@ -124,14 +85,7 @@ namespace ApiCatalogoJogos.Services
                 return null;
             }
 
-            return new JogoViewModel
-            {
-                Id = jogo.Id,
-                Nome = jogo.Nome,
-                Produtora = jogo.Produtora,
-                Preco = jogo.Preco
-            };
-
+            return _mapper.Map<JogoViewModel>(jogo);
         }
 
         public void Remover(int id)

@@ -101,7 +101,7 @@ namespace ApiCatalogoJogos.Controllers
             {
                 _jogoService.Remover(id);
 
-                return Ok();
+                return NoContent();
 
             } catch(JogoNaoCadastradoException e)
             {
